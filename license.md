@@ -1,5 +1,5 @@
 # The license
 
-Copyright (c) Author Name <author@email.com>
+Copyright (c) Renier Trenuela <renier.trenuela@gmail.com>
 
-...Add your license text here...
+...This is for all Laravel Developers...
