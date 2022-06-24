@@ -1,0 +1,21 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use App\Models\$MODEL$;
+use Illuminate\Database\Eloquent\Builder;
+use Throwexceptions\LaravelGridjs\LaravelGridjs;
+
+class $CLASS_NAME$Gridjs extends LaravelGridjs
+{
+    public function config()
+    {
+        return $this->setQuery(model: $MODEL$::query());
+    }
+
+    public function columns(): array
+    {
+        return [];
+    }
+}
+

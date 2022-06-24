@@ -1,0 +1,42 @@
+{
+    "name": "throwexceptions/laravel-gridjs",
+    "description": ":package_description",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Renier Trenuela",
+            "email": "renier.trenuela@gmail.com",
+            "homepage": "https://github.com/throwexceptions/laravel-gridjs"
+        }
+    ],
+    "homepage": "https://github.com/throwexceptions/laravel-gridjs",
+    "keywords": ["Laravel", "LaravelGridjs"],
+    "require": {
+        "illuminate/support": "~9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.0",
+        "orchestra/testbench": "~7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gridjs\\": "../../../Gridjs/",
+            "Throwexceptions\\LaravelGridjs\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Throwexceptions\\LaravelGridjs\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Throwexceptions\\LaravelGridjs\\LaravelGridjsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelGridjs": "Throwexceptions\\LaravelGridjs\\Facades\\LaravelGridjs"
+            }
+        }
+    }
+}
