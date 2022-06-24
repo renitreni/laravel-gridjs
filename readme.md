@@ -1,4 +1,4 @@
-# LaravelGridjs
+# Laravel Gridjs (Supports Vanilla Js)
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
@@ -17,6 +17,101 @@ $ composer require throwexceptions/laravel-gridjs
 
 ## Usage
 
+1. Be sure to add the assets first in your views.
+- Add this in your ``` <head></head> ```
+```html
+    <x-throwexceptions::styles/>
+```
+- Add this before inside the <body> before end tag.
+```html
+    <x-throwexceptions::scripts/>
+```
+
+2. Run this in your terminal to create class builder for the data grid.
+    `*Create your sample users`
+```bash
+    php artisan gridjs:make-builder <TableName> <Model>
+    
+    e.g.
+    php artisan migrate
+    php artisan gridjs:make-builder UserTable User
+```
+
+3. Create the make() and fetch() for server-side calls
+
+```php
+Route::get('/', function () {
+    return view('welcome', ['tableUser' => app(UserTableGridjs::class)->make(route('user.fetch'))]);
+});
+
+Route::get('/user/fetch', function () {
+    return app(UserTableGridjs::class)->fetch(request());
+})->name('user.fetch');
+```
+
+4. Use component generated and pass variable in view
+```html
+<x-throwexceptions::gridjs :table="$tableUser" name="tableUser"/>
+```
+
+## Full Script
+
+UserTableGridjs
+```php
+<?php
+
+namespace Gridjs;
+
+use App\Models\User;
+use Throwexceptions\LaravelGridjs\LaravelGridjs;
+
+class UserTableGridjs extends LaravelGridjs
+{
+    public function config()
+    {
+        $this->setQuery(model: User::query())
+             ->enableFixedHeader()
+             ->editColumn('action', function ($row) {
+                 return '<button class="btn btn-info">button</button>';
+             });
+    }
+
+    public function columns(): array
+    {
+        return [
+            'id'     => 'ID',
+            'name'   => 'Name',
+            'email'  => 'E-mails',
+            'action' => [
+                'name' => "Action",
+                'sort' => ['enabled' => false],
+                'formatter' => true
+            ],
+        ];
+    }
+}
+```
+routes/web.php
+```php
+Route::get('/', function () {
+    return view('welcome', ['tableUser' => app(UserTableGridjs::class)->make(route('user.fetch'))]);
+});
+
+Route::get('/user/fetch', function () {
+    return app(UserTableGridjs::class)->fetch(request());
+})->name('user.fetch');
+
+```
+welcome.blade.php
+```html
+<x-throwexceptions::styles/>
+</head>
+<body class="antialiased">
+<x-throwexceptions::gridjs :table="$tableUser" name="tableUser"/>
+
+<x-throwexceptions::scripts/>
+</body>
+```
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
@@ -37,7 +132,7 @@ If you discover any security related issues, please email author@email.com inste
 
 ## Credits
 
-- [Author Name][link-author]
+- [Renier Trenuela][link-author]
 - [All Contributors][link-contributors]
 
 ## License
