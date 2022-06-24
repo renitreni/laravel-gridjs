@@ -1,6 +1,6 @@
 {
     "name": "throwexceptions/laravel-gridjs",
-    "description": ":package_description",
+    "description": "This package supports GridJs Vanilla JS fro Laravel Framework",
     "license": "MIT",
     "authors": [
         {
