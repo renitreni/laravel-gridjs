@@ -15,6 +15,7 @@ $ composer require throwexceptions/laravel-gridjs
 
 ## Usage
 
+### Basic Usage
 1. Be sure to add the assets first in your views.
 - Add this in your ``` <head></head> ```
 ```html
@@ -50,6 +51,36 @@ Route::get('/user/fetch', function () {
 4. Use component generated and pass variable in view
 ```html
 <x-throwexceptions::gridjs :table="$tableUser" name="tableUser"/>
+```
+### Custom Search Filter
+1. Add target form ``` setTargetForm(<id|class>) ``` of you choice in view file
+```php 
+    public function config()
+    {
+        $this->setQuery(model: User::query())
+             ->enableFixedHeader()
+             ->setTargetForm('#former')
+             ->editColumn('action', function ($row) {
+                 return '<button class="btn btn-info">button</button>';
+             });
+    }
+```
+2. Setup Custom Form in your view
+```html
+    <form id="former">
+        <div class="row">
+            <div class="col-auto">
+                <label>Name</label>
+                <input name="name" class="form-control">
+            </div>
+            <div class="col-auto">
+                <label>E-mail</label>
+                <input name="email" class="form-control">
+            </div>
+        </div>
+        <button type="button" onclick="tableUser.forceRender()" class="btn btn-primary">Search</button>
+    </form>
+    <x-throwexceptions::gridjs :table="$tableUser" name="tableUser"/>
 ```
 
 ## Full Script

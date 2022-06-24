@@ -4,7 +4,7 @@
 
 @push('initialized')
     <script>
-        let GridTable{{ $name ?? 'wrapper' }} = new gridjs.Grid({
+        let {{ $name ?? 'wrapper' }} = new gridjs.Grid({
             columns: [@foreach($table->getColumns() as $column)
                 @if(is_array($column))
             {
@@ -23,18 +23,28 @@
                 enabled: true,
                 limit: 5,
                 server: {
-                    url: (prev, page, limit) => `${prev}&limit=${limit}&offset=${page * limit}`
+                    url: function(prev, page, limit) {
+                        let $link = `${prev}&limit=${limit}&offset=${page * limit}`;
+                        @if($table->getTargetForm())
+                            const formData = new FormData(document.querySelector('{{$table->getTargetForm()}}'))
+                            for (var pair of formData.entries()) {
+                                console.log(pair[0] + ': ' + pair[1]);
+                                $link += `&${pair[0]}=${pair[1]}`
+                            }
+                        @endif
+                        return $link;
+                    }
                 }
             },
             @if($table->isFixedHeader())
             fixedHeader: true,
             @endif
-                @if($table->searchStatus())
-            search: {
-                server: {
-                    url: (prev, keyword) => `${prev}&search=${keyword}`
-                }
-            },
+            @if($table->searchStatus())
+                search: {
+                    server: {
+                        url: (prev, keyword) => `${prev}&search=${keyword}`
+                    }
+                },
             @endif
             sort: {
                 multiColumn: false,
@@ -52,6 +62,7 @@
             },
             server: {
                 url: '{{ $table->getRoute() }}?',
+                method: 'GET',
                 then: data => data.data.map(data => [@foreach($table->getColumns() as $key => $column) data.{{ $key }}, @endforeach]),
                 total: data => data.total,
             }

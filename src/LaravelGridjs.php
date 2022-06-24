@@ -28,6 +28,8 @@ abstract class LaravelGridjs
 
     public bool $fixedHeader = false;
 
+    public ?string $formRequest = null;
+
     public function make(string $route): static
     {
         $this->config();
@@ -170,6 +172,13 @@ abstract class LaravelGridjs
         return $this->searchKeyword;
     }
 
+    public function setSearchStatus(bool $status): static
+    {
+        $this->searchKeyword = $status;
+
+        return $this;
+    }
+
     public function enableFixedHeader(): static
     {
         $this->fixedHeader = true;
@@ -185,5 +194,17 @@ abstract class LaravelGridjs
     public function getHeight()
     {
         return $this->getHeight();
+    }
+
+    public function setTargetForm(string $id): static
+    {
+        $this->formRequest = $id;
+
+        return $this;
+    }
+
+    public function getTargetForm()
+    {
+        return $this->formRequest;
     }
 }
