@@ -92,7 +92,7 @@ abstract class LaravelGridjs
         foreach ($model->cursor() as $values) {
             $row = $values->toArray();
             foreach ($this->columns as $key => $values) {
-                if (! isset($row[$key])) {
+                if (! array_key_exists($key, $row)) {
                     $row[$key] = $this->columns[$key]($row);
                 }
             }
