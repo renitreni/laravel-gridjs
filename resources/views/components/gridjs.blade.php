@@ -24,9 +24,11 @@ $rand = Factory::create()->buildingNumber()
 
         build{{ $rand }}.pagination.server.url = function (prev, page, limit) {
             let $link = `${prev}&limit=${limit}&offset=${page * limit}`;
-            const formData = new FormData(document.querySelector(build{{ $rand }}.formTarget))
-            for (var pair of formData.entries()) {
-                $link += `&${pair[0]}=${pair[1]}`
+            if(document.querySelector(build{{ $rand }}.formTarget)) {
+                const formData = new FormData(document.querySelector(build{{ $rand }}.formTarget))
+                for (var pair of formData.entries()) {
+                    $link += `&${pair[0]}=${pair[1]}`
+                }
             }
             return $link;
         };
