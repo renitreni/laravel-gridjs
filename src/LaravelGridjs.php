@@ -4,7 +4,6 @@ namespace Throwexceptions\LaravelGridjs;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use JetBrains\PhpStorm\Pure;
 
 abstract class LaravelGridjs
 {
@@ -30,13 +29,54 @@ abstract class LaravelGridjs
 
     public ?string $formRequest = null;
 
-    public function make(string $route): static
+    public function make(string $route): string
     {
         $this->config();
-        $this->route   = $route;
-        $this->columns = $this->columns();
+        $this->setRoute($route);
 
-        return $this;
+        return json_encode([
+            'fixedHeader' => $this->isFixedHeader(),
+            'columns'     => $this->getColumns(),
+            'server'      => $this->getServer($route),
+            'pagination'  => $this->getPagination(),
+            'mapped'      => $this->getKeyColumns(),
+            'search'      => $this->getSearch(),
+            'sort'        => true,
+            'formTarget'  => $this->getTargetForm(),
+        ]);
+    }
+
+    public function getSearch()
+    {
+        return $this->searchStatus() ? ['server' => ['url' => '',],] : ['server' => false];
+    }
+
+    public function getPagination()
+    {
+        return [
+            'enabled' => true,
+            'limit'   => $this->getLimit(),
+            'server'  => [
+                'url' => $this->getRoute(),
+            ],
+        ];
+    }
+
+    public function getServer($route)
+    {
+        $this->setLimit(10);
+        $this->setOffset(20);
+
+        return [
+            'url'     => $route.'?',
+            'method'  => 'POST',
+            "headers" => [
+                'Content-Type' => 'application/json',
+                'X-CSRF-TOKEN' => csrf_token(),
+            ],
+            "body"    => ['limit' => $this->getLimit(), 'offset' => $this->getOffset()],
+            'total'   => $this->getTotal(),
+        ];
     }
 
     public function fetch(Request $request): array
@@ -108,9 +148,28 @@ abstract class LaravelGridjs
         return [];
     }
 
-    #[Pure] public function getColumns(): array
+    public function getColumns(): array
     {
-        return $this->columns;
+        $this->columns = $this->columns();
+
+        $final = [];
+        foreach ($this->columns as $value) {
+            $final[] = $value;
+        }
+
+        return $final;
+    }
+
+    public function getKeyColumns(): array
+    {
+        $this->columns = $this->columns();
+
+        $final = [];
+        foreach ($this->columns as $key => $value) {
+            $final[] = $key;
+        }
+
+        return $final;
     }
 
     public function getTotal(): int
