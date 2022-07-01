@@ -135,12 +135,9 @@ abstract class LaravelGridjs
 
         foreach ($model->cursor() as $values) {
             $row = $values->toArray();
-            foreach ($this->columns as $key => $values) {
-                if($values instanceof Closure) {
-                    $row[$key] = $this->columns[$key]($row);
-                }
-                if (! array_key_exists($key, $row)) {
-                    if($this->columns[$key]($row) instanceof \Illuminate\View\View) {
+            foreach ($this->columns as $key => $item) {
+                if ($item instanceof Closure) {
+                    if ($this->columns[$key]($row) instanceof \Illuminate\View\View) {
                         $row[$key] = $this->columns[$key]($row)->render();
                     } else {
                         $row[$key] = $this->columns[$key]($row);
