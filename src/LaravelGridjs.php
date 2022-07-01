@@ -2,6 +2,7 @@
 
 namespace Throwexceptions\LaravelGridjs;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -135,6 +136,9 @@ abstract class LaravelGridjs
         foreach ($model->cursor() as $values) {
             $row = $values->toArray();
             foreach ($this->columns as $key => $values) {
+                if($values instanceof Closure) {
+                    $row[$key] = $this->columns[$key]($row);
+                }
                 if (! array_key_exists($key, $row)) {
                     if($this->columns[$key]($row) instanceof \Illuminate\View\View) {
                         $row[$key] = $this->columns[$key]($row)->render();
