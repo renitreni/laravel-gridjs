@@ -17,6 +17,8 @@ abstract class LaravelGridjs
 
     private string $route;
 
+    private string $height = '100%';
+
     public bool $searchKeyword = true;
 
     public ?string $keyword = null;
@@ -43,6 +45,7 @@ abstract class LaravelGridjs
             'search'      => $this->getSearch(),
             'sort'        => true,
             'formTarget'  => $this->getTargetForm(),
+            'height'      => $this->height,
         ]);
     }
 
@@ -133,7 +136,11 @@ abstract class LaravelGridjs
             $row = $values->toArray();
             foreach ($this->columns as $key => $values) {
                 if (! array_key_exists($key, $row)) {
-                    $row[$key] = $this->columns[$key]($row);
+                    if($this->columns[$key]($row) instanceof \Illuminate\View\View) {
+                        $row[$key] = $this->columns[$key]($row)->render();
+                    } else {
+                        $row[$key] = $this->columns[$key]($row);
+                    }
                 }
             }
 
@@ -238,9 +245,10 @@ abstract class LaravelGridjs
         return $this;
     }
 
-    public function enableFixedHeader(): static
+    public function enableFixedHeader(string $height): static
     {
         $this->fixedHeader = true;
+        $this->height      = $height;
 
         return $this;
     }

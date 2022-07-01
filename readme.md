@@ -82,7 +82,13 @@ Route::get('/user/fetch', function () {
     </form>
     <x-throwexceptions::gridjs :table="$tableUser" name="tableUser"/>
 ```
+## Config 
 
+| Method      | Usage |
+| ------------- | ------------- |
+| enableFixedHeader('100px')  | Set a fix height of the table by custom css and you will get fixed header  |
+| setSearchStatus(false)  | This is by default is true.|
+| setTargetForm('#former')| This is to get values on target form.|
 ## Full Script
 
 UserTableGridjs
