@@ -143,7 +143,6 @@ abstract class LaravelGridjs
                     }
                 }
             }
-
             $result[] = $row;
         }
 
