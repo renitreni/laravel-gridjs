@@ -20,6 +20,8 @@ abstract class LaravelGridjs
 
     private string $height = '100%';
 
+    private string $width = '100%';
+
     public bool $searchKeyword = true;
 
     public ?string $keyword = null;
@@ -47,6 +49,9 @@ abstract class LaravelGridjs
             'sort'        => true,
             'formTarget'  => $this->getTargetForm(),
             'height'      => $this->height,
+            'style'       => [
+                'table' => ['width' => $this->width],
+            ],
         ]);
     }
 
