@@ -12,9 +12,9 @@ abstract class LaravelGridjs
 
     private array $columns;
 
-    private int $limit;
+    private int $limit = 10;
 
-    private int $offset;
+    private int $offset = 20;
 
     private string $route;
 
@@ -73,9 +73,6 @@ abstract class LaravelGridjs
 
     public function getServer($route)
     {
-        $this->setLimit(10);
-        $this->setOffset(20);
-
         return [
             'url'     => $route.'?',
             'method'  => 'POST',
