@@ -4,7 +4,10 @@ namespace Throwexceptions\LaravelGridjs;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 abstract class LaravelGridjs
 {
@@ -33,6 +36,8 @@ abstract class LaravelGridjs
     public bool $fixedHeader = false;
 
     public ?string $formRequest = null;
+
+    public string $exportName;
 
     public function make(string $route): string
     {
@@ -102,13 +107,15 @@ abstract class LaravelGridjs
             $this->keyword = $request->get('search');
         }
 
+        $model = $this->buildQuery($this->columns());
+
         return [
+            'data'          => $this->getResults($model),
             'searchKeyword' => $this->searchStatus(),
-            'total'         => $this->getTotal(),
             'route'         => $this->getRoute(),
             'limit'         => $this->getLimit(),
             'offset'        => $this->getOffset(),
-            'data'          => $this->getBuilderQuery(),
+            'total'         => $this->getTotal(),
         ];
     }
 
@@ -120,26 +127,39 @@ abstract class LaravelGridjs
         return $this;
     }
 
-    public function getBuilderQuery(): array
+    public function buildQuery($columns)
     {
-        $result = [];
-        $model  = $this->model
+         return $this->model
             ->when($this->sortedColumn, function ($q) {
                 $q->orderBy($this->sortedColumn, $this->sortedDirection);
             })
-            ->when($this->keyword, function ($q) {
-                foreach ($this->columns as $key => $value) {
-                    $q->orWhere($key, "LIKE", "%$this->keyword%");
+            ->when($this->keyword, function ($q) use ($columns) {
+                foreach ($columns as $key => $value) {
+                    if(is_array($value) && isset($value['searchable']) && !$value['searchable']) {
+                        continue;
+                    }
+                    $q->orWhere(DB::raw("lower($key)"), "LIKE", "%".strtolower($this->keyword)."%");
                 }
-            })
-            ->skip($this->offset)
-            ->take($this->limit);
+            });
+    }
 
-        foreach ($model->cursor() as $values) {
+    public function setQueryToSession($name)
+    {
+        $this->exportName = $name;
+
+        return $this;
+    }
+
+    public function getResults($model): array
+    {
+        $this->querySessionInitialize($model);
+
+        $result = [];
+        foreach ($model->skip($this->offset)->take($this->limit)->cursor() as $values) {
             $row = $values->toArray();
             foreach ($this->columns as $key => $item) {
                 if ($item instanceof Closure) {
-                    if ($this->columns[$key]($row) instanceof \Illuminate\View\View) {
+                    if ($this->columns[$key]($row) instanceof View) {
                         $row[$key] = $this->columns[$key]($row)->render();
                     } else {
                         $row[$key] = $this->columns[$key]($row);
@@ -150,6 +170,13 @@ abstract class LaravelGridjs
         }
 
         return $result;
+    }
+
+    public function querySessionInitialize($model)
+    {
+        $sql = vsprintf(str_replace('?', '%s', $model->toSql()), $model->getBindings());
+
+        !$this->exportName ?: session()->put($this->exportName, $sql);
     }
 
     public function columns(): array
