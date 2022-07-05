@@ -37,7 +37,7 @@ abstract class LaravelGridjs
 
     public ?string $formRequest = null;
 
-    public string $exportName;
+    public ?string $exportName = null;
 
     public function make(string $route): string
     {
