@@ -155,7 +155,7 @@ abstract class LaravelGridjs
         $this->querySessionInitialize($model);
 
         $result = [];
-        foreach ($model->skip($this->offset)->take($this->limit)->cursor() as $values) {
+        foreach ($model->skip($this->offset)->take($this->limit)->get() as $values) {
             $row = $values->toArray();
             foreach ($this->columns as $key => $item) {
                 if ($item instanceof Closure) {
