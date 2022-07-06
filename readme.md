@@ -91,6 +91,19 @@ Route::get('/user/fetch', function () {
 | setTargetForm('#former')| This is to get values on target form.|
 | setQueryToSession('session_name')|By calling this method saves the query to session. User may use this to call query for export, etc.|  
 
+## Livewire
+
+If you are using a livewire, you may call the forceRender of Gridjs inside the livewire component by
+https://laravel-livewire.com/docs/2.x/events#browser
+
+```bash
+    html:
+    <x-throwexceptions::gridjs :table="$tableUser" name="tableUser1"/>
+    
+    php livewire component: (just add Render at the end)
+    $this->emit('tableUser1Render');
+```
+
 ## Full Script
 
 UserTableGridjs

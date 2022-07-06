@@ -46,5 +46,9 @@
 
         let {{ $name ?? 'wrapper' }} = new gridjs.Grid(build{{ $name }})
             .render(document.getElementById("{{ $name ?? 'wrapper' }}"));
+
+        window.addEventListener('{{ $name ?? 'wrapper' }}Render', event => {
+            {{ $name ?? 'wrapper' }}.forceRender();
+        })
     </script>
 @endpush
