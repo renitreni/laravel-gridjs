@@ -101,7 +101,7 @@ https://laravel-livewire.com/docs/2.x/events#browser
     <x-throwexceptions::gridjs :table="$tableUser" name="tableUser1"/>
     
     php livewire component: (just add Render at the end)
-    $this->emit('tableUser1Render');
+    $this->dispatchBrowserEvent('tableUser1Render');
 ```
 
 ## Full Script
