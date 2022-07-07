@@ -104,6 +104,13 @@ https://laravel-livewire.com/docs/2.x/events#browser
     $this->dispatchBrowserEvent('tableUser1Render');
 ```
 
+## Columns method (only in this package)
+
+- **Searchable**
+  - This column will not be filtered if wildcard search is enabled.
+```php
+    'id' => ['searchable' => 'false'],
+```
 ## Full Script
 
 UserTableGridjs
