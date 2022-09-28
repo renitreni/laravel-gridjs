@@ -110,12 +110,12 @@ abstract class LaravelGridjs
         $model = $this->buildQuery($this->columns());
 
         return [
-            'data'          => $this->getResults($model),
             'searchKeyword' => $this->searchStatus(),
             'route'         => $this->getRoute(),
             'limit'         => $this->getLimit(),
             'offset'        => $this->getOffset(),
             'total'         => $this->getTotal(),
+            'data'          => $this->getResults($model),
         ];
     }
 
