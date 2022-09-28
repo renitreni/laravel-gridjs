@@ -3,6 +3,7 @@
 </div>
 
 @push('initialized')
+
     <script>
         let build{{ $name }} = JSON.parse('{!! $table  !!}');
         // My Custom fix for GridJs Laravel only
@@ -30,6 +31,11 @@
             build{{ $name }}.search.server.url = (prev, keyword) => `${prev}&search=${keyword}`;
         } else {
             build{{ $name }}.search = null;
+        }
+        build{{ $name }}.style = {
+            table: {
+                'white-space': 'nowrap'
+            }
         }
         build{{ $name }}.sort = {
             multiColumn: false,
