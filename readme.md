@@ -86,11 +86,11 @@ Route::get('/user/fetch', function () {
 
 | Method      | Usage |
 | ------------- | ------------- |
-| enableFixedHeader('100px')  | Set a fix height of the table by custom css and you will get fixed header  |
-| setSearchStatus(false)  | This is by default is true.|
-| setTargetForm('#former')| This is to get values on target form.|
-| setQueryToSession('session_name')|By calling this method saves the query to session. User may use this to call query for export, etc.|  
-
+| ->enableFixedHeader('100px')  | Set a fix height of the table by custom css and you will get fixed header  |
+| ->setSearchStatus(false)  | This is by default is true.|
+| ->setTargetForm('#former')| This is to get values on target form.|
+| ->setQueryToSession('session_name')|By calling this method saves the query to session. User may use this to call query for export, etc.|  
+| ->setSorter('created_at', 'desc') | Set column default sorted |
 ## Livewire
 
 If you are using a livewire, you may call the forceRender of Gridjs inside the livewire component by
