@@ -117,6 +117,8 @@ abstract class LaravelGridjs
             'offset' => $this->getOffset(),
             'total' => $this->getTotal(),
             'data' => $this->getResults($model),
+            'dir' => $this->sortedDirection,
+            'order' => $this->sortedColumn,
         ];
     }
 
