@@ -3,9 +3,9 @@
 </div>
 
 @push('initialized')
-
     <script>
-        let build{{ $name }} = JSON.parse('{!! $table  !!}');
+        let build{{ $name }} = JSON.parse('{!! $table !!}');
+
         // My Custom fix for GridJs Laravel only
         build{{ $name }}.server.body = JSON.stringify(build{{ $name }}.server.body)
         build{{ $name }}.server.total = data => data.total;
@@ -17,9 +17,10 @@
             return hold;
         });
 
+        // PAGINATION BUILDER W/ FORM SEARCH DATA
         build{{ $name }}.pagination.server.url = function (prev, page, limit) {
             let $link = `${prev}&limit=${limit}&offset=${page * limit}`;
-            if(document.querySelector(build{{ $name }}.formTarget)) {
+            if (document.querySelector(build{{ $name }}.formTarget)) {
                 const formData = new FormData(document.querySelector(build{{ $name }}.formTarget))
                 for (var pair of formData.entries()) {
                     $link += `&${pair[0]}=${pair[1]}`
@@ -27,16 +28,21 @@
             }
             return $link;
         };
+
+        // SEARCH
         if (build{{ $name }}.search.server) {
             build{{ $name }}.search.server.url = (prev, keyword) => `${prev}&search=${keyword}`;
         } else {
             build{{ $name }}.search = null;
         }
+
         build{{ $name }}.style = {
             table: {
                 'white-space': 'nowrap'
             }
         }
+
+        // SORT
         build{{ $name }}.sort = {
             multiColumn: false,
             server: {

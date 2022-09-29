@@ -4,7 +4,6 @@ namespace Throwexceptions\LaravelGridjs;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -45,16 +44,18 @@ abstract class LaravelGridjs
         $this->setRoute($route);
 
         return json_encode([
+            'dir' => $this->sortedDirection,
+            'order' => $this->sortedColumn,
             'fixedHeader' => $this->isFixedHeader(),
-            'columns'     => $this->getColumns(),
-            'server'      => $this->getServer($route),
-            'pagination'  => $this->getPagination(),
-            'mapped'      => $this->getKeyColumns(),
-            'search'      => $this->getSearch(),
-            'sort'        => true,
-            'formTarget'  => $this->getTargetForm(),
-            'height'      => $this->height,
-            'style'       => [
+            'columns' => $this->getColumns(),
+            'server' => $this->getServer($route),
+            'pagination' => $this->getPagination(),
+            'mapped' => $this->getKeyColumns(),
+            'search' => $this->getSearch(),
+            'sort' => true,
+            'formTarget' => $this->getTargetForm(),
+            'height' => $this->height,
+            'style' => [
                 'table' => ['width' => $this->width],
             ],
         ]);
@@ -69,8 +70,8 @@ abstract class LaravelGridjs
     {
         return [
             'enabled' => true,
-            'limit'   => $this->getLimit(),
-            'server'  => [
+            'limit' => $this->getLimit(),
+            'server' => [
                 'url' => $this->getRoute(),
             ],
         ];
@@ -79,14 +80,14 @@ abstract class LaravelGridjs
     public function getServer($route)
     {
         return [
-            'url'     => $route.'?',
-            'method'  => 'POST',
+            'url' => $route.'?',
+            'method' => 'POST',
             "headers" => [
                 'Content-Type' => 'application/json',
                 'X-CSRF-TOKEN' => csrf_token(),
             ],
-            "body"    => ['limit' => $this->getLimit(), 'offset' => $this->getOffset()],
-            'total'   => $this->getTotal(),
+            "body" => ['limit' => $this->getLimit(), 'offset' => $this->getOffset()],
+            'total' => $this->getTotal(),
         ];
     }
 
@@ -111,11 +112,11 @@ abstract class LaravelGridjs
 
         return [
             'searchKeyword' => $this->searchStatus(),
-            'route'         => $this->getRoute(),
-            'limit'         => $this->getLimit(),
-            'offset'        => $this->getOffset(),
-            'total'         => $this->getTotal(),
-            'data'          => $this->getResults($model),
+            'route' => $this->getRoute(),
+            'limit' => $this->getLimit(),
+            'offset' => $this->getOffset(),
+            'total' => $this->getTotal(),
+            'data' => $this->getResults($model),
         ];
     }
 
@@ -129,13 +130,13 @@ abstract class LaravelGridjs
 
     public function buildQuery($columns)
     {
-         return $this->model
+        return $this->model
             ->when($this->sortedColumn, function ($q) {
                 $q->orderBy($this->sortedColumn, $this->sortedDirection);
             })
             ->when($this->keyword, function ($q) use ($columns) {
                 foreach ($columns as $key => $value) {
-                    if(is_array($value) && isset($value['searchable']) && !$value['searchable']) {
+                    if (is_array($value) && isset($value['searchable']) && ! $value['searchable']) {
                         continue;
                     }
                     $q->orWhere(DB::raw("lower($key)"), "LIKE", "%".strtolower($this->keyword)."%");
@@ -176,7 +177,7 @@ abstract class LaravelGridjs
     {
         $sql = vsprintf(str_replace('?', '%s', $model->toSql()), $model->getBindings());
 
-        !$this->exportName ?: session()->put($this->exportName, $sql);
+        ! $this->exportName ?: session()->put($this->exportName, $sql);
     }
 
     public function columns(): array
@@ -260,6 +261,8 @@ abstract class LaravelGridjs
     {
         $this->sortedColumn    = $column;
         $this->sortedDirection = $direction;
+
+        return $this;
     }
 
     public function searchStatus(): bool
